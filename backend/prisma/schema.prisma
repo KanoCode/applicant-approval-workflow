@@ -1,0 +1,102 @@
+// Prisma schema for the application submission/approval workflow.
+//
+// Design notes (see README for full rationale):
+// - Status is a Postgres enum, mirrored by the TypeScript union in
+//   src/services/stateMachine.ts. The two are kept in sync by hand since
+//   Prisma enums and TS types don't share a single source of truth, but the
+//   state machine module is the only place transition *logic* lives.
+// - AuditLog rows are immutable and append-only: every status change writes
+//   exactly one row, including the initial submission. This is the audit
+//   trail required by the spec.
+// - Application.ownerId references the Applicant; reviewerId is set when a
+//   Reviewer claims it (moves it to UNDER_REVIEW) so the queue can show who
+//   is handling what, but approve/reject/return do not require a prior claim.
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  APPLICANT
+  REVIEWER
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  RETURNED
+  APPROVED
+  REJECTED
+}
+
+enum Category {
+  TRAVEL
+  EQUIPMENT
+  LEAVE
+  EXPENSE
+  OTHER
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role
+  createdAt    DateTime @default(now())
+
+  ownedApplications    Application[] @relation("OwnedApplications")
+  reviewedApplications Application[] @relation("ReviewedApplications")
+  auditLogEntries      AuditLog[]
+
+  @@map("users")
+}
+
+model Application {
+  id             String            @id @default(uuid())
+  title          String
+  category       Category
+  description    String
+  amount         Decimal           @db.Decimal(12, 2)
+  attachmentPath String?
+  attachmentName String?
+  status         ApplicationStatus @default(DRAFT)
+
+  ownerId    String
+  owner      User    @relation("OwnedApplications", fields: [ownerId], references: [id])
+  reviewerId String?
+  reviewer   User?   @relation("ReviewedApplications", fields: [reviewerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  auditLog AuditLog[]
+
+  @@index([ownerId])
+  @@index([status])
+  @@map("applications")
+}
+
+// One row per status transition (including DRAFT -> DRAFT creation is NOT
+// logged; the first logged row is the initial submission). Immutable by
+// convention: the API never updates or deletes AuditLog rows.
+model AuditLog {
+  id            String             @id @default(uuid())
+  applicationId String
+  application   Application        @relation(fields: [applicationId], references: [id])
+  actorId       String
+  actor         User               @relation(fields: [actorId], references: [id])
+  fromStatus    ApplicationStatus
+  toStatus      ApplicationStatus
+  comment       String?
+  createdAt     DateTime           @default(now())
+
+  @@index([applicationId])
+  @@map("audit_log")
+}
