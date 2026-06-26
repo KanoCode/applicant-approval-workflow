@@ -2,6 +2,9 @@ import type { ApiErrorBody } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '/api';
 
+const TOKEN_STORAGE_KEY = 'auth_token';
+
+
 export class ApiClientError extends Error {
   constructor(
     public status: number,
@@ -13,10 +16,17 @@ export class ApiClientError extends Error {
   }
 }
 
-let authToken: string | null = null;
+
+let authToken: string | null = localStorage.getItem(TOKEN_STORAGE_KEY);
+
 
 export function setAuthToken(token: string | null) {
   authToken = token;
+  if (token) {
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+  } else {
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+  }
 }
 
 async function request<T>(
