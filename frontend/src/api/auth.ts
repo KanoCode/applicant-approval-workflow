@@ -4,6 +4,8 @@ import type { User } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
+console.log(API_BASE)
+
 
 export const authApi = {
   login: (email: string, password: string) =>
