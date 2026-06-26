@@ -34,7 +34,21 @@ services:
       - "4000:4000"
     volumes:
       - approval_uploads:/app/uploads
+  
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    por80ts:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    depends_on:
+      - backend
+
 
 volumes:
   approval_db_data:
   approval_uploads:
+  caddy_data:
