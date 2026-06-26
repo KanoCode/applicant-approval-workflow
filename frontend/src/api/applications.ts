@@ -1,6 +1,9 @@
 import { api } from './client';
 import type { Application, Permissions, Category, ApplicationStatus } from '../types';
 
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
+
 export interface ApplicationFormInput {
   title: string;
   category: Category;
@@ -11,32 +14,32 @@ export interface ApplicationFormInput {
 export const applicationsApi = {
   list: (status?: ApplicationStatus | 'ALL') =>
     api.get<{ applications: Application[] }>(
-      status ? `/applications?status=${status}` : '/applications',
+      status ? `${API_BASE}/applications?status=${status}` :API_BASE+'/applications',
     ),
 
   get: (id: string) =>
-    api.get<{ application: Application; permissions: Permissions }>(`/applications/${id}`),
+    api.get<{ application: Application; permissions: Permissions }>(`${API_BASE}/applications/${id}`),
 
   create: (data: ApplicationFormInput) =>
-    api.post<{ application: Application }>('/applications', data),
+    api.post<{ application: Application }>(API_BASE+'/applications', data),
 
   update: (id: string, data: ApplicationFormInput) =>
-    api.put<{ application: Application }>(`/applications/${id}`, data),
+    api.put<{ application: Application }>(`${API_BASE}/applications/${id}`, data),
 
-  remove: (id: string) => api.del<void>(`/applications/${id}`),
+  remove: (id: string) => api.del<void>(`${API_BASE}/applications/${id}`),
 
   uploadAttachment: (id: string, file: File) =>
-    api.upload<{ application: Application }>(`/applications/${id}/attachment`, file),
+    api.upload<{ application: Application }>(`${API_BASE}/applications/${id}/attachment`, file),
 
-  submit: (id: string) => api.post<{ application: Application }>(`/applications/${id}/submit`),
+  submit: (id: string) => api.post<{ application: Application }>(`${API_BASE}/applications/${id}/submit`),
 
-  claim: (id: string) => api.post<{ application: Application }>(`/applications/${id}/claim`),
+  claim: (id: string) => api.post<{ application: Application }>(`${API_BASE}/applications/${id}/claim`),
 
-  approve: (id: string) => api.post<{ application: Application }>(`/applications/${id}/approve`),
+  approve: (id: string) => api.post<{ application: Application }>(API_BASE+`/applications/${id}/approve`),
 
   reject: (id: string, comment: string) =>
-    api.post<{ application: Application }>(`/applications/${id}/reject`, { comment }),
+    api.post<{ application: Application }>(`${API_BASE}/applications/${id}/reject`, { comment }),
 
   return: (id: string, comment: string) =>
-    api.post<{ application: Application }>(`/applications/${id}/return`, { comment }),
+    api.post<{ application: Application }>(`${API_BASE}/applications/${id}/return`, { comment }),
 };
