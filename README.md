@@ -5,6 +5,8 @@ A small two-sided app: an **Applicant** drafts and submits a request; a
 this build is a correctly enforced status workflow with a full audit trail,
 backed by real server-side authorization — not breadth of features.
 
+[live link](https://applicant-approval-workflow.onrender.com/login)
+
 ## Table of Contents
 
 - [Stack](#stack)
