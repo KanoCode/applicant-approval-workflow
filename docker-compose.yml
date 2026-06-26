@@ -27,6 +27,7 @@ services:
       JWT_SECRET: "a7U1HPiLf7eZJiv+YSU8jYM5XdolNd99+ZF1biIQN0E="
       JWT_EXPIRES_IN: "8h"
       PORT: 4000
+      FRONTEND_URL: "https://applicant-approval-workflow.onrender.com"
       UPLOAD_DIR: uploads
       MAX_UPLOAD_BYTES: 5242880
       NODE_ENV: production
