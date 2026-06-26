@@ -16,4 +16,5 @@ export const config = {
   uploadDir: process.env.UPLOAD_DIR || 'uploads',
   maxUploadBytes: parseInt(process.env.MAX_UPLOAD_BYTES || `${5 * 1024 * 1024}`, 10), // 5MB
   nodeEnv: process.env.NODE_ENV || 'development',
+  frontendUrl: process.env.FRONTEND_URL
 };

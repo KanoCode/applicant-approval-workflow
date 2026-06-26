@@ -16,8 +16,12 @@ export function createApp(): Express {
 
    const allowedOrigins = [
      'http://localhost:5173',
-     process.env.FRONTEND_URL, 
+     config.frontendUrl, 
    ].filter(Boolean);
+
+
+  console.log('FRONTEND_URL env var:', process.env.FRONTEND_URL);
+  console.log('Allowed origins:', allowedOrigins);
 
   app.use(cors({
     origin:(origin,callback)=>{
