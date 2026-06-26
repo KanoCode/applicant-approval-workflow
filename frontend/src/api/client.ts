@@ -1,5 +1,7 @@
 import type { ApiErrorBody } from '../types';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
+
 export class ApiClientError extends Error {
   constructor(
     public status: number,
@@ -31,7 +33,7 @@ async function request<T>(
     headers['Authorization'] = `Bearer ${authToken}`;
   }
 
-  const res = await fetch(`/api${path}`, { ...options, headers });
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
 
   if (res.status === 204) {
     return undefined as T;
