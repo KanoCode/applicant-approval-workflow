@@ -20,9 +20,6 @@ export function createApp(): Express {
    ].filter(Boolean);
 
 
-  console.log('FRONTEND_URL env var:', process.env.FRONTEND_URL);
-  console.log('Allowed origins:', allowedOrigins);
-
   app.use(cors({
     origin:(origin,callback)=>{
           if (!origin || allowedOrigins.includes(origin)) {

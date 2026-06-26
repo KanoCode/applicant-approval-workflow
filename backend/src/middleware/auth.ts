@@ -38,7 +38,8 @@ export function authenticate(req: Request, _res: Response, next: NextFunction): 
     const payload = verifyToken(token);
     req.user = { id: payload.sub, role: payload.role, email: payload.email };
     next();
-  } catch {
+  } catch (err){
+      console.error('JWT verify failed:', err);
     throw new UnauthorizedError('Invalid or expired token.');
   }
 }
