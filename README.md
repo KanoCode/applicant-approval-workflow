@@ -3,9 +3,10 @@
 A small two-sided app: an **Applicant** drafts and submits a request; a
 **Reviewer** approves, rejects, or returns it with a comment. The focus of
 this build is a correctly enforced status workflow with a full audit trail,
-backed by real server-side authorization — not breadth of features.
+backed by real server-side authorization — not breadth of features. the project is hosted on google cloud for the api, and render for the frontend.
 
-[live link](https://applicant-approval-workflow.onrender.com/login)
+[live link](https://applicant-approval-workflow.onrender.com)
+
 
 ## Table of Contents
 
@@ -25,7 +26,10 @@ backed by real server-side authorization — not breadth of features.
 
 - **Backend:** Node.js, Express, TypeScript, Prisma, PostgreSQL, JWT auth, Zod validation, Jest + Supertest.
 - **Frontend:** React + TypeScript (Vite), React Router, no extra state library (the API surface is small enough that local component state + fetch is clearer than introducing one).
+
 - **Run:** `docker-compose.yml` brings up Postgres + the backend; the frontend runs separately via Vite's dev server.
+
+- **Hosting** the backend is hosted on a virtual machine in google cloud. the frontend is hostend on render static sites.
 
 ## Running it
 
@@ -180,6 +184,8 @@ for reject and the create-as-reviewer case.
 
 ## Trade-offs and what I'd add with more time
 
+- **Save Draft improvement** Currently with my setup, an applicant is forced to save draft then later submit. i can improve this by saving it in the local storage automatically when a submit fails due to a network failure, then when network is back a background service will update the database/ draft. this is so that they don't have to start over everytime 
+
 
 - **No refresh tokens / session renewal.** JWTs expire after 8 hours and
   there's no refresh flow — acceptable for an assessment, not for
@@ -206,15 +212,11 @@ for reject and the create-as-reviewer case.
   rubric gap, given the time budget.
 
 ## Use of AI tools
-
-This entire project — backend, frontend, tests, and this README — was
-generated working with Claude (Anthropic) in conversation, iteratively,
-across the data model, state machine, API, and UI. The state-machine logic
+I used AI to scaffold the codebase for both frontend and backend. After i was done with functionality. AI was used to generate tests.
+The AI used used in conversation iteratively. The state-machine logic
 and authorization wiring were reviewed most closely since that's the part
 of the rubric weighted most heavily, checking the test coverage against the
-legal/illegal transition table in the spec. As noted above, the code was
-**not run or tested in a live environment** before delivery — running
-`npm install`, the test suites, and a manual click-through of the full
-workflow (draft -> submit -> claim -> approve, and the
-reject/return-with-comment paths) is the first thing to do with it, and
-should be treated as part of "understanding every line," not a formality.
+legal/illegal transition table in the spec. the code was
+
+**The code was tested in a live environment** right in the description we find a link to the live website. this is to show that i tested my code both locally and on the server
+
