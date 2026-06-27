@@ -9,8 +9,6 @@ import {
 import { describe, it, expect } from '@jest/globals'; // For newer versions of Jest
 
 
-// import { describe, it , expect} from 'vitest';
-
 describe('stateMachine.applyTransition', () => {
   describe('legal transitions', () => {
     it('owner submits a DRAFT -> SUBMITTED', () => {
