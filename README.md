@@ -38,9 +38,17 @@ backed by real server-side authorization — not breadth of features. the projec
 - git clone [this repo](https://github.com/KanoCode/applicant-approval-workflow.git)
 
 ```bash
-cd approval-app
+cd  applicant-approval-workflow
 
 docker compose up --build
+
+cd applicant-approval-workflow/backend
+
+npm install
+
+cp .env.example .env
+
+npm run prisma:migrate
 
 npm run seed
 
@@ -50,12 +58,6 @@ This starts Postgres on `:5432` and the API on `:4000`, running
 `prisma migrate deploy` automatically on container start. Once it's up,
 seed some data:
 
-```bash
-cd backend
-cp .env.example .env   # if running prisma CLI commands from your host
-npm install
-npm run seed
-```
 
 **Seeded logins** (password for all: `password123`):
 
@@ -84,7 +86,7 @@ Point `DATABASE_URL` (in `backend/.env`) at any Postgres instance, then:
 ```bash
 cd backend
 npm install
-npx prisma migrate deploy   # or `npx prisma migrate dev` for the first run
+npm run prisma:migrate:deploy   # or `npm run prisma:migrate`
 npm run seed
 npm run dev
 ```
@@ -94,7 +96,11 @@ npm run dev
 ```bash
 cd backend
 npm install
-npm test
+
+npm run prisma:migrate:deploy   # or `npm run prisma:migrate`
+npm run seed
+
+npm run test
 ```
 
 `stateMachine.test.ts` is pure unit testing — no database needed.
